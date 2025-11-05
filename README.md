@@ -124,13 +124,183 @@ API disponible en: `http://localhost:8082`
 ### 🔄 Flujo de Integración
 
 1. **Componente A** y **B** importan **Componente C** como dependencia Maven
-2. Ambos componentes exponen APIs REST documentadas
-3. **Componente C** puede invocar endpoints de A o B para integración circular
-4. Comunicación entre A y B mediante REST API
+2. Ambos componentes exponen APIs REST documentadas con OpenAPI 3
+3. **Componente C** puede invocar endpoints de A o B para integración circular mediante `IntegracionService`
+4. Comunicación entre componentes mediante REST API usando `ApiClient`
 
-### 👨‍💻 Autor
+### 📊 Ejemplo de Flujo Completo
 
-Carlos Sánchez - UMG 2025
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant ComponenteA
+    participant ComponenteC
+    participant ComponenteB
+    
+    Cliente->>ComponenteA: POST /api/pedidos
+    ComponenteA->>ComponenteC: generarCodigoUnico("PEDIDO")
+    ComponenteC-->>ComponenteA: PEDIDO-20251104-150030-B7C9E123
+    ComponenteA->>ComponenteC: calcularTotal(items)
+    ComponenteC-->>ComponenteA: Total calculado
+    ComponenteA-->>Cliente: Pedido creado (201)
+    
+    ComponenteC->>ComponenteA: obtenerEstadisticasComponenteA()
+    ComponenteA-->>ComponenteC: Estadísticas
+    ComponenteC->>ComponenteB: obtenerEstadisticasComponenteB()
+    ComponenteB-->>ComponenteC: Estadísticas
+```
+
+### 🎯 Características Implementadas
+
+#### Componente C - Biblioteca Compartida
+- ✅ Generación de códigos únicos con timestamp y UUID
+- ✅ Cálculo de totales de productos
+- ✅ Cálculo de impuestos (IVA 12%)
+- ✅ Validación de códigos
+- ✅ Cliente HTTP para integración REST (`ApiClient`)
+- ✅ Servicio de integración circular (`IntegracionService`)
+
+#### Componente A - Clientes y Pedidos
+- ✅ CRUD completo de Clientes
+- ✅ CRUD completo de Pedidos
+- ✅ Relaciones JPA (Cliente → Pedidos → Items)
+- ✅ Cálculo automático de totales e impuestos
+- ✅ Validaciones con Bean Validation
+- ✅ DTOs para transferencia de datos
+- ✅ Documentación OpenAPI 3 completa
+- ✅ Swagger UI integrado
+- ✅ Actuator para health checks
+
+#### Componente B - Proveedores y Facturas
+- ✅ CRUD completo de Proveedores
+- ✅ CRUD completo de Facturas
+- ✅ Relaciones JPA (Proveedor → Facturas → Items)
+- ✅ Cálculo automático de totales e impuestos
+- ✅ Validaciones con Bean Validation
+- ✅ DTOs para transferencia de datos
+- ✅ Documentación OpenAPI 3 completa
+- ✅ Swagger UI integrado
+- ✅ Actuator para health checks
+
+### 🧪 Pruebas de Integración
+
+#### 1. Verificar Componente A
+```bash
+# Health check
+curl http://localhost:8081/actuator/health
+
+# Crear cliente
+curl -X POST http://localhost:8081/api/clientes \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Juan Pérez","email":"juan@example.com","telefono":"50212345678"}'
+
+# Listar clientes
+curl http://localhost:8081/api/clientes
+```
+
+#### 2. Verificar Componente B
+```bash
+# Health check
+curl http://localhost:8082/actuator/health
+
+# Crear proveedor
+curl -X POST http://localhost:8082/api/proveedores \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Tech Solutions","email":"info@tech.com"}'
+
+# Listar proveedores
+curl http://localhost:8082/api/proveedores
+```
+
+#### 3. Probar Integración Circular (Componente C)
+El servicio `IntegracionService` en Componente C puede invocar:
+- `obtenerEstadisticasComponenteA()` → Llama a `/api/clientes` del Componente A
+- `obtenerEstadisticasComponenteB()` → Llama a `/api/proveedores` del Componente B
+
+### 🚀 Comandos Rápidos
+
+```powershell
+# Compilar todo el proyecto
+cd componente-c; mvn clean install; cd ..
+cd componente-a; mvn clean package; cd ..
+cd componente-b; mvn clean package; cd ..
+
+# Ejecutar todos los componentes (en terminales separadas)
+cd componente-a; mvn spring-boot:run
+cd componente-b; mvn spring-boot:run
+
+# Ver logs en tiempo real
+cd componente-a; mvn spring-boot:run | Select-String "Started"
+cd componente-b; mvn spring-boot:run | Select-String "Started"
+```
+
+### 📖 Documentación Adicional
+
+- **Especificaciones OpenAPI**: Ver carpeta `/docs`
+  - `openapiA.yaml` - Componente A
+  - `openapiB.yaml` - Componente B
+- **README por componente**:
+  - `componente-a/README.md`
+  - `componente-b/README.md`
+  - `componente-c/README.md`
+
+### 🎓 Buenas Prácticas Implementadas
+
+1. **Arquitectura**:
+   - Separación de responsabilidades (Controller → Service → Repository)
+   - DTOs para desacoplar capa de presentación de dominio
+   - Uso de interfaces JPA Repository
+
+2. **Código**:
+   - Validaciones con Jakarta Validation
+   - Logging con SLF4J
+   - Manejo de transacciones con `@Transactional`
+   - Uso de Lombok para reducir boilerplate
+
+3. **API**:
+   - Documentación completa con OpenAPI 3
+   - Códigos HTTP correctos (200, 201, 204, 400, 404)
+   - Ejemplos en la documentación
+   - Versionado semántico
+
+4. **Git**:
+   - Commits con Conventional Commits
+   - Mensajes descriptivos
+   - Commits atómicos por funcionalidad
+
+### � Troubleshooting
+
+#### Error de conexión a base de datos
+```bash
+# Verificar MariaDB
+mysql -u logistica_user -p logistica_clientes
+
+# Verificar PostgreSQL
+psql -U logistica_user -d logistica_proveedores
+```
+
+#### Puerto ya en uso
+```bash
+# Verificar puertos en uso
+netstat -ano | findstr :8081
+netstat -ano | findstr :8082
+
+# Cambiar puerto en application.properties
+server.port=8083
+```
+
+#### Dependencia Componente-C no encontrada
+```bash
+# Reinstalar Componente-C
+cd componente-c
+mvn clean install
+```
+
+### �👨‍💻 Autor
+
+**Carlos Sánchez**  
+Universidad Mariano Gálvez - 2025  
+Examen Final - Desarrollo Web
 
 ### 📝 Licencia
 
