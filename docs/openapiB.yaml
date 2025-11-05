@@ -1,0 +1,408 @@
+openapi: 3.0.3
+info:
+  title: Componente B - API de Proveedores y Facturas
+  description: |
+    API REST para la gestión de proveedores y facturas del sistema de logística.
+    Este componente maneja operaciones CRUD sobre proveedores y facturas, con persistencia en PostgreSQL.
+  version: 1.0.0
+  contact:
+    name: Carlos Sánchez
+    email: csanchez@umg.edu.gt
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8082
+    description: Servidor de desarrollo
+
+tags:
+  - name: Proveedores
+    description: Operaciones sobre proveedores
+  - name: Facturas
+    description: Operaciones sobre facturas
+
+paths:
+  /api/proveedores:
+    get:
+      tags:
+        - Proveedores
+      summary: Listar todos los proveedores
+      description: Obtiene la lista completa de proveedores registrados
+      operationId: listarProveedores
+      responses:
+        '200':
+          description: Lista de proveedores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Proveedor'
+              example:
+                - id: 1
+                  codigo: "PROVEEDOR-20251104-153000-C4D6F789"
+                  nombre: "Distribuidora XYZ S.A."
+                  email: "ventas@xyz.com"
+                  telefono: "50278901234"
+                  direccion: "Zona 10, Guatemala"
+                  nit: "98765432-1"
+                  activo: true
+    post:
+      tags:
+        - Proveedores
+      summary: Crear nuevo proveedor
+      description: Registra un nuevo proveedor en el sistema
+      operationId: crearProveedor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorInput'
+            example:
+              nombre: "Tech Solutions Ltd."
+              email: "info@techsolutions.com"
+              telefono: "50245678901"
+              direccion: "Carretera a El Salvador"
+              nit: "12345678-9"
+      responses:
+        '201':
+          description: Proveedor creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proveedor'
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/proveedores/{id}:
+    get:
+      tags:
+        - Proveedores
+      summary: Obtener proveedor por ID
+      description: Obtiene los detalles de un proveedor específico
+      operationId: obtenerProveedorPorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proveedor
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: Proveedor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proveedor'
+        '404':
+          description: Proveedor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Proveedores
+      summary: Eliminar proveedor
+      description: Elimina un proveedor del sistema
+      operationId: eliminarProveedor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Proveedor eliminado exitosamente
+        '404':
+          description: Proveedor no encontrado
+
+  /api/facturas:
+    get:
+      tags:
+        - Facturas
+      summary: Listar todas las facturas
+      description: Obtiene la lista completa de facturas
+      operationId: listarFacturas
+      responses:
+        '200':
+          description: Lista de facturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Factura'
+    post:
+      tags:
+        - Facturas
+      summary: Crear nueva factura
+      description: Registra una nueva factura en el sistema
+      operationId: crearFactura
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacturaInput'
+            example:
+              proveedorId: 1
+              observaciones: "Compra de equipo"
+              items:
+                - productoCodigo: "EQ001"
+                  productoNombre: "Servidor Dell PowerEdge"
+                  precioUnitario: 15000.00
+                  cantidad: 1
+                - productoCodigo: "EQ002"
+                  productoNombre: "Switch Cisco 24 puertos"
+                  precioUnitario: 3500.00
+                  cantidad: 2
+      responses:
+        '201':
+          description: Factura creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factura'
+        '400':
+          description: Datos inválidos
+
+  /api/facturas/{id}:
+    get:
+      tags:
+        - Facturas
+      summary: Obtener factura por ID
+      operationId: obtenerFacturaPorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Factura encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factura'
+        '404':
+          description: Factura no encontrada
+    delete:
+      tags:
+        - Facturas
+      summary: Eliminar factura
+      operationId: eliminarFactura
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Factura eliminada
+        '404':
+          description: Factura no encontrada
+
+components:
+  schemas:
+    Proveedor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único del proveedor
+          example: 1
+        codigo:
+          type: string
+          description: Código único generado automáticamente
+          example: "PROVEEDOR-20251104-153000-C4D6F789"
+        nombre:
+          type: string
+          description: Nombre o razón social del proveedor
+          example: "Distribuidora XYZ S.A."
+        email:
+          type: string
+          format: email
+          description: Email del proveedor
+          example: "ventas@xyz.com"
+        telefono:
+          type: string
+          description: Teléfono del proveedor
+          example: "50278901234"
+        direccion:
+          type: string
+          description: Dirección del proveedor
+          example: "Zona 10, Guatemala"
+        nit:
+          type: string
+          description: NIT del proveedor
+          example: "98765432-1"
+        activo:
+          type: boolean
+          description: Estado del proveedor
+          example: true
+
+    ProveedorInput:
+      type: object
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        telefono:
+          type: string
+        direccion:
+          type: string
+          maxLength: 300
+        nit:
+          type: string
+          maxLength: 20
+
+    Factura:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único de la factura
+        codigo:
+          type: string
+          description: Código único de la factura
+          example: "FACTURA-20251104-154500-E8F2A456"
+        proveedorId:
+          type: integer
+          format: int64
+          description: ID del proveedor
+        proveedorNombre:
+          type: string
+          description: Nombre del proveedor
+        fechaFactura:
+          type: string
+          format: date-time
+          description: Fecha de emisión de la factura
+        estado:
+          type: string
+          enum: [PENDIENTE, PAGADA, VENCIDA, CANCELADA]
+          description: Estado de la factura
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemFactura'
+          description: Items de la factura
+        subtotal:
+          type: number
+          format: double
+          description: Subtotal sin impuestos
+        impuestos:
+          type: number
+          format: double
+          description: Impuestos (IVA 12%)
+        total:
+          type: number
+          format: double
+          description: Total con impuestos
+        observaciones:
+          type: string
+          description: Observaciones adicionales
+
+    FacturaInput:
+      type: object
+      required:
+        - proveedorId
+        - items
+      properties:
+        proveedorId:
+          type: integer
+          format: int64
+        observaciones:
+          type: string
+          maxLength: 500
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ItemFacturaInput'
+
+    ItemFactura:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        productoCodigo:
+          type: string
+          description: Código del producto o servicio
+        productoNombre:
+          type: string
+          description: Nombre del producto o servicio
+        precioUnitario:
+          type: number
+          format: double
+          description: Precio unitario
+        cantidad:
+          type: integer
+          minimum: 1
+          description: Cantidad
+        subtotal:
+          type: number
+          format: double
+          description: Subtotal del item
+
+    ItemFacturaInput:
+      type: object
+      required:
+        - productoCodigo
+        - productoNombre
+        - precioUnitario
+        - cantidad
+      properties:
+        productoCodigo:
+          type: string
+          maxLength: 50
+        productoNombre:
+          type: string
+          maxLength: 200
+        precioUnitario:
+          type: number
+          format: double
+          minimum: 0
+        cantidad:
+          type: integer
+          minimum: 1
+
+    Error:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string

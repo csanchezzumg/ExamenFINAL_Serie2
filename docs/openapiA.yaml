@@ -1,0 +1,422 @@
+openapi: 3.0.3
+info:
+  title: Componente A - API de Clientes y Pedidos
+  description: |
+    API REST para la gestión de clientes y pedidos del sistema de logística.
+    Este componente maneja operaciones CRUD sobre clientes y pedidos, con persistencia en MariaDB.
+  version: 1.0.0
+  contact:
+    name: Carlos Sánchez
+    email: csanchez@umg.edu.gt
+    url: https://github.com/csanchezzumg
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8081
+    description: Servidor de desarrollo
+  - url: http://localhost:8081/api
+    description: API Base
+
+tags:
+  - name: Clientes
+    description: Operaciones sobre clientes
+  - name: Pedidos
+    description: Operaciones sobre pedidos
+
+paths:
+  /api/clientes:
+    get:
+      tags:
+        - Clientes
+      summary: Listar todos los clientes
+      description: Obtiene la lista completa de clientes registrados en el sistema
+      operationId: listarClientes
+      responses:
+        '200':
+          description: Lista de clientes obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+              example:
+                - id: 1
+                  codigo: "CLIENTE-20251104-143025-A3F5D891"
+                  nombre: "Juan Pérez"
+                  email: "juan@example.com"
+                  telefono: "50212345678"
+                  direccion: "Guatemala, GT"
+                  nit: "12345678"
+                  activo: true
+    post:
+      tags:
+        - Clientes
+      summary: Crear nuevo cliente
+      description: Registra un nuevo cliente en el sistema
+      operationId: crearCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+            example:
+              nombre: "María López"
+              email: "maria@example.com"
+              telefono: "50298765432"
+              direccion: "Antigua Guatemala"
+              nit: "87654321"
+      responses:
+        '201':
+          description: Cliente creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/clientes/{id}:
+    get:
+      tags:
+        - Clientes
+      summary: Obtener cliente por ID
+      description: Obtiene los detalles de un cliente específico
+      operationId: obtenerClientePorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del cliente
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '404':
+          description: Cliente no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Clientes
+      summary: Actualizar cliente
+      description: Actualiza la información de un cliente existente
+      operationId: actualizarCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '200':
+          description: Cliente actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '404':
+          description: Cliente no encontrado
+        '400':
+          description: Datos inválidos
+    delete:
+      tags:
+        - Clientes
+      summary: Eliminar cliente
+      description: Elimina un cliente del sistema
+      operationId: eliminarCliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Cliente eliminado exitosamente
+        '404':
+          description: Cliente no encontrado
+
+  /api/pedidos:
+    get:
+      tags:
+        - Pedidos
+      summary: Listar todos los pedidos
+      description: Obtiene la lista completa de pedidos
+      operationId: listarPedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pedido'
+    post:
+      tags:
+        - Pedidos
+      summary: Crear nuevo pedido
+      description: Registra un nuevo pedido en el sistema
+      operationId: crearPedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PedidoInput'
+            example:
+              clienteId: 1
+              observaciones: "Pedido urgente"
+              items:
+                - productoCodigo: "P001"
+                  productoNombre: "Laptop Dell"
+                  precioUnitario: 5000.00
+                  cantidad: 2
+      responses:
+        '201':
+          description: Pedido creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '400':
+          description: Datos inválidos
+
+  /api/pedidos/{id}:
+    get:
+      tags:
+        - Pedidos
+      summary: Obtener pedido por ID
+      operationId: obtenerPedidoPorId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Pedido no encontrado
+    delete:
+      tags:
+        - Pedidos
+      summary: Eliminar pedido
+      operationId: eliminarPedido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Pedido eliminado
+        '404':
+          description: Pedido no encontrado
+
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único del cliente
+          example: 1
+        codigo:
+          type: string
+          description: Código único generado automáticamente
+          example: "CLIENTE-20251104-143025-A3F5D891"
+        nombre:
+          type: string
+          description: Nombre completo del cliente
+          example: "Juan Pérez"
+        email:
+          type: string
+          format: email
+          description: Email del cliente
+          example: "juan@example.com"
+        telefono:
+          type: string
+          description: Teléfono del cliente
+          example: "50212345678"
+        direccion:
+          type: string
+          description: Dirección del cliente
+          example: "Guatemala, GT"
+        nit:
+          type: string
+          description: NIT del cliente
+          example: "12345678"
+        activo:
+          type: boolean
+          description: Estado del cliente
+          example: true
+
+    ClienteInput:
+      type: object
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        telefono:
+          type: string
+          pattern: '^[0-9]{8,15}$'
+        direccion:
+          type: string
+          maxLength: 300
+        nit:
+          type: string
+          maxLength: 20
+
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        codigo:
+          type: string
+          example: "PEDIDO-20251104-150030-B7C9E123"
+        clienteId:
+          type: integer
+          format: int64
+        clienteNombre:
+          type: string
+        fechaPedido:
+          type: string
+          format: date-time
+        estado:
+          type: string
+          enum: [PENDIENTE, CONFIRMADO, EN_PROCESO, ENVIADO, ENTREGADO, CANCELADO]
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemPedido'
+        subtotal:
+          type: number
+          format: double
+        impuestos:
+          type: number
+          format: double
+        total:
+          type: number
+          format: double
+        observaciones:
+          type: string
+
+    PedidoInput:
+      type: object
+      required:
+        - clienteId
+        - items
+      properties:
+        clienteId:
+          type: integer
+          format: int64
+        observaciones:
+          type: string
+          maxLength: 500
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ItemPedidoInput'
+
+    ItemPedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        productoCodigo:
+          type: string
+        productoNombre:
+          type: string
+        precioUnitario:
+          type: number
+          format: double
+        cantidad:
+          type: integer
+          minimum: 1
+        subtotal:
+          type: number
+          format: double
+
+    ItemPedidoInput:
+      type: object
+      required:
+        - productoCodigo
+        - productoNombre
+        - precioUnitario
+        - cantidad
+      properties:
+        productoCodigo:
+          type: string
+          maxLength: 50
+        productoNombre:
+          type: string
+          maxLength: 200
+        precioUnitario:
+          type: number
+          format: double
+          minimum: 0
+        cantidad:
+          type: integer
+          minimum: 1
+
+    Error:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
