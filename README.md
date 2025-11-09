@@ -174,8 +174,51 @@ El proyecto incluye un dashboard web desarrollado con **Next.js 16, TypeScript y
 
 1. **Componente A** y **B** importan **Componente C** como dependencia Maven
 2. Ambos componentes exponen APIs REST documentadas con OpenAPI 3
-3. **Componente C** puede invocar endpoints de A o B para integración circular mediante `IntegracionService`
-4. Comunicación entre componentes mediante REST API usando `ApiClient`
+3. **Componente B** puede referenciar **Pedidos del Componente A** al crear facturas mediante `IntegracionComponenteAService`
+4. **Componente C** proporciona utilidades compartidas (códigos únicos, cálculos, validaciones)
+5. **Dashboard NextJS** consume ambas APIs y muestra datos integrados
+
+#### Integración B→A: Facturas con Referencias a Pedidos
+
+El Componente B puede asociar facturas con pedidos del Componente A:
+
+```json
+POST http://localhost:8082/api/facturas
+{
+  "proveedorId": 1,
+  "pedidoIds": [1, 2, 3],
+  "items": [
+    {
+      "productoCodigo": "PROD-001",
+      "productoNombre": "Material de construcción",
+      "precioUnitario": 150.00,
+      "cantidad": 10
+    }
+  ],
+  "observaciones": "Factura relacionada con pedidos de construcción"
+}
+```
+
+El sistema valida que los pedidos existan en el Componente A y retorna:
+
+```json
+{
+  "id": 5,
+  "codigo": "FACTURA-20251109-143022-A1B2C3D4",
+  "proveedorId": 1,
+  "proveedorNombre": "Constructora XYZ",
+  "total": 1800.00,
+  "pedidoIds": [1, 2, 3],
+  "pedidosReferenciados": [
+    {
+      "pedidoId": 1,
+      "numero": "PEDIDO-20251109-120000-X9Y8Z7",
+      "total": 500.00,
+      "estado": "completado"
+    }
+  ]
+}
+```
 
 ### 📊 Ejemplo de Flujo Completo
 

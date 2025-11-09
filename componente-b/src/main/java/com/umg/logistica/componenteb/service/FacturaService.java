@@ -17,6 +17,8 @@ public class FacturaService {
     private FacturaRepository facturaRepository;
     @Autowired
     private ProveedorRepository proveedorRepository;
+    @Autowired
+    private IntegracionComponenteAService integracionService;
 
     public List<FacturaDTO> listarTodos() {
         return facturaRepository.findAll().stream()
@@ -32,6 +34,15 @@ public class FacturaService {
     public FacturaDTO crear(FacturaDTO dto) {
         Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        
+        // Validar referencias a pedidos si se proporcionaron
+        if (dto.getPedidoIds() != null && !dto.getPedidoIds().isEmpty()) {
+            for (Long pedidoId : dto.getPedidoIds()) {
+                if (!integracionService.existePedido(pedidoId)) {
+                    throw new RuntimeException("Pedido no encontrado: " + pedidoId);
+                }
+            }
+        }
         
         Factura factura = new Factura();
         factura.setCodigo(LogisticaUtils.generarCodigoUnico("FACTURA"));
@@ -49,7 +60,16 @@ public class FacturaService {
             factura.addItem(item);
         }
         factura.calcularTotales();
-        return convertirADTO(facturaRepository.save(factura));
+        
+        FacturaDTO resultado = convertirADTO(facturaRepository.save(factura));
+        
+        // Cargar información de pedidos referenciados
+        if (dto.getPedidoIds() != null && !dto.getPedidoIds().isEmpty()) {
+            resultado.setPedidoIds(dto.getPedidoIds());
+            resultado.setPedidosReferenciados(integracionService.obtenerPedidos(dto.getPedidoIds()));
+        }
+        
+        return resultado;
     }
 
     public void eliminar(Long id) {

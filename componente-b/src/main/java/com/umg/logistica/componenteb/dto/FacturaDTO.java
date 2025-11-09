@@ -24,4 +24,8 @@ public class FacturaDTO {
     private BigDecimal impuestos;
     private BigDecimal total;
     private String observaciones;
+    
+    // Integración con Componente A - Referencias a pedidos
+    private List<Long> pedidoIds;
+    private List<PedidoReferenciaDTO> pedidosReferenciados;
 }

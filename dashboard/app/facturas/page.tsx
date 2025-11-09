@@ -3,12 +3,22 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+interface PedidoReferencia {
+  pedidoId: number;
+  numero: string;
+  total: number;
+  estado: string;
+}
+
 interface Factura {
   id: number;
-  numero: string;
-  fecha: string;
-  monto: number;
+  codigo: string;
+  fechaFactura: string;
+  total: number;
   proveedorId?: number;
+  proveedorNombre?: string;
+  pedidoIds?: number[];
+  pedidosReferenciados?: PedidoReferencia[];
 }
 
 export default function FacturasPage() {
@@ -97,16 +107,19 @@ export default function FacturasPage() {
                       ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Número
+                      Código
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Fecha
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Monto
+                      Total
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Proveedor ID
+                      Proveedor
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Pedidos Ref.
                     </th>
                   </tr>
                 </thead>
@@ -117,16 +130,33 @@ export default function FacturasPage() {
                         {factura.id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
-                        {factura.numero}
+                        {factura.codigo}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(factura.fecha).toLocaleDateString("es-GT")}
+                        {new Date(factura.fechaFactura).toLocaleDateString("es-GT")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                        Q{factura.monto.toFixed(2)}
+                        Q{Number(factura.total).toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        {factura.proveedorId || "-"}
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {factura.proveedorNombre || `ID: ${factura.proveedorId}` || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {factura.pedidosReferenciados && factura.pedidosReferenciados.length > 0 ? (
+                          <div className="flex flex-col gap-1">
+                            {factura.pedidosReferenciados.map((pedido) => (
+                              <span
+                                key={pedido.pedidoId}
+                                className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                                title={`${pedido.numero} - Q${pedido.total}`}
+                              >
+                                🔗 Pedido #{pedido.pedidoId}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">Sin refs.</span>
+                        )}
                       </td>
                     </tr>
                   ))}
