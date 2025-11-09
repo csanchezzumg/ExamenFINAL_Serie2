@@ -101,19 +101,34 @@ CREATE USER logistica_user WITH PASSWORD 'logistica_pass';
 GRANT ALL PRIVILEGES ON DATABASE logistica_proveedores TO logistica_user;
 ```
 
-#### 4. Ejecutar Componente A
+#### 4. Compilar todo el proyecto (opcional pero recomendado)
+```powershell
+.\build-all.ps1
+```
+
+#### 5. Ejecutar Componente A
+```powershell
+.\run-componente-a.ps1
+```
+O manualmente:
 ```bash
 cd componente-a
 mvn spring-boot:run
 ```
 API disponible en: `http://localhost:8081`
 
-#### 5. Ejecutar Componente B
+#### 6. Ejecutar Componente B (en otra terminal)
+```powershell
+.\run-componente-b.ps1
+```
+O manualmente:
 ```bash
 cd componente-b
 mvn spring-boot:run
 ```
 API disponible en: `http://localhost:8082`
+
+> **Nota**: Los scripts PowerShell (`.ps1`) automatizan la compilación y ejecución. Si prefieres hacerlo manualmente, usa los comandos Maven directamente.
 
 ### 📚 Documentación API
 
