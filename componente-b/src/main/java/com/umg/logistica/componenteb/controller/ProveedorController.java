@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/proveedores")
+@CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Proveedores", description = "API para gestión de proveedores")
 public class ProveedorController {
     @Autowired

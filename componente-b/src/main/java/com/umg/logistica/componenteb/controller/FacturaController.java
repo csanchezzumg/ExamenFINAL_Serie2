@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/facturas")
+@CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Facturas", description = "API para gestión de facturas")
 public class FacturaController {
     @Autowired

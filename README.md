@@ -18,6 +18,12 @@ Sistema empresarial de logística que gestiona **clientes/pedidos** y **proveedo
          └─────────►│ Componente C │◄──────────┘
                     │ (Maven Lib)  │
                     └──────────────┘
+                           ▲
+                           │
+                  ┌────────┴────────┐
+                  │   Dashboard     │
+                  │   (Next.js 16)  │
+                  └─────────────────┘
 ```
 
 ### 📦 Componentes
@@ -43,10 +49,11 @@ Sistema empresarial de logística que gestiona **clientes/pedidos** y **proveedo
 
 ### 🛠️ Tecnologías
 
+- **Frontend**: Next.js 16, TypeScript, Tailwind CSS
 - **Backend**: Java 17, Spring Boot 3.x, Maven
 - **Bases de datos**: MariaDB, PostgreSQL
 - **Documentación API**: OpenAPI 3 (Swagger)
-- **Build**: Maven
+- **Build**: Maven, npm
 - **Control de versiones**: Git
 
 ### 📂 Estructura del Proyecto
@@ -56,6 +63,7 @@ ExamenFINAL_Serie2/
 ├── componente-a/          # Spring Boot + MariaDB
 ├── componente-b/          # Spring Boot + PostgreSQL
 ├── componente-c/          # Maven Library
+├── dashboard/             # Next.js 16 Frontend
 ├── docs/                  # Especificaciones OpenAPI
 │   ├── openapiA.yaml
 │   └── openapiB.yaml
@@ -69,6 +77,7 @@ ExamenFINAL_Serie2/
 - Maven 3.8+
 - MariaDB 10.x
 - PostgreSQL 14+
+- Node.js 18+ y npm
 - Git
 
 #### 1. Clonar el repositorio
@@ -128,7 +137,32 @@ mvn spring-boot:run
 ```
 API disponible en: `http://localhost:8082`
 
+#### 7. Ejecutar Dashboard NextJS (en otra terminal)
+```bash
+cd dashboard
+npm run dev
+```
+Dashboard disponible en: `http://localhost:3000`
+
 > **Nota**: Los scripts PowerShell (`.ps1`) automatizan la compilación y ejecución. Si prefieres hacerlo manualmente, usa los comandos Maven directamente.
+
+### 🖥️ Dashboard NextJS
+
+El proyecto incluye un dashboard web desarrollado con **Next.js 16, TypeScript y Tailwind CSS** que consume las APIs de ambos componentes.
+
+**Características**:
+- 📊 Vista unificada de Clientes, Pedidos, Proveedores y Facturas
+- 🎨 Interfaz moderna con Tailwind CSS
+- 🔄 Actualizaciones en tiempo real
+- 📱 Diseño responsive
+- 🔗 Enlaces directos a Swagger UI de cada componente
+
+**Páginas disponibles**:
+- `/` - Dashboard principal con acceso a todos los módulos
+- `/clientes` - Lista de clientes (Componente A)
+- `/pedidos` - Lista de pedidos (Componente A)
+- `/proveedores` - Lista de proveedores (Componente B)
+- `/facturas` - Lista de facturas (Componente B)
 
 ### 📚 Documentación API
 
