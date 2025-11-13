@@ -132,8 +132,8 @@ export default function Home() {
 
           <div className="mt-6 pt-6 border-t border-gray-200 text-center">
             <p className="text-sm text-gray-600">
-              <span className="font-semibold text-blue-600">Componente A</span> (Gestión de Ventas - MariaDB) · 
-              <span className="font-semibold text-purple-600 ml-2">Componente B</span> (Gestión de Compras - PostgreSQL)
+              <span className="font-semibold text-blue-600">Componente A</span> (Gestión de Ventas) · 
+              <span className="font-semibold text-purple-600 ml-2">Componente B</span> (Gestión de Compras)
             </p>
           </div>
         </div>
@@ -203,12 +203,12 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Componente B - Gestión de Compras */}
+          {/* Componente B - Cálculo de Facturas */}
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
             <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                  Gestión de Compras
+                  Cálculo de Facturas
                 </h2>
                 <a
                   href="http://localhost:8082/swagger-ui.html"
@@ -253,7 +253,7 @@ export default function Home() {
                   <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>Integración con pedidos</span>
+                  <span>Cálculo de facturas</span>
                 </div>
               </div>
 
