@@ -80,10 +80,10 @@ export default function Home() {
         facturas: facturas.length || 0,
       });
 
-      // Obtener los últimos 3 pedidos
+      // Obtener los últimos 2 pedidos
       const pedidosOrdenados = pedidos
-        .sort((a: Pedido, b: Pedido) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
-        .slice(0, 3);
+        .sort((a: Pedido, b: Pedido) => b.id - a.id)
+        .slice(0, 2);
       
       // Obtener nombres y códigos de clientes para los pedidos
       const pedidosConNombres = await Promise.all(
@@ -100,10 +100,10 @@ export default function Home() {
       
       setUltimosPedidos(pedidosConNombres);
 
-      // Obtener las últimas 3 facturas
+      // Obtener las últimas 2 facturas
       const facturasOrdenadas = facturas
-        .sort((a: Factura, b: Factura) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
-        .slice(0, 3);
+        .sort((a: Factura, b: Factura) => b.id - a.id)
+        .slice(0, 2);
       
       // Obtener nombres y códigos de proveedores para las facturas
       const facturasConNombres = await Promise.all(
@@ -285,7 +285,6 @@ export default function Home() {
                   </svg>
                 </a>
               </div>
-              <p className="text-blue-100 text-sm">Componente A - MariaDB</p>
             </div>
             
             <div className="p-8">
@@ -379,7 +378,6 @@ export default function Home() {
                   </svg>
                 </a>
               </div>
-              <p className="text-purple-100 text-sm">Componente B - PostgreSQL</p>
             </div>
             
             <div className="p-8">

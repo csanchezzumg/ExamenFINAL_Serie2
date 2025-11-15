@@ -10,6 +10,7 @@ interface Cliente {
   email: string;
   telefono?: string;
   direccion?: string;
+  nit?: string;
 }
 
 interface Pedido {
@@ -266,6 +267,18 @@ function ClientesTab() {
               placeholder="Ciudad, País"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              NIT
+            </label>
+            <input
+              type="text"
+              value={formData.nit || ""}
+              onChange={(e) => setFormData({ ...formData, nit: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
+              placeholder="12345678-9"
+            />
+          </div>
           <div className="md:col-span-2 flex gap-3">
             <button
               type="submit"
@@ -308,6 +321,7 @@ function ClientesTab() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Correo</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teléfono</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIT</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
               </thead>
@@ -319,6 +333,7 @@ function ClientesTab() {
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">{cliente.nombre}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{cliente.email || "-"}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{cliente.telefono || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{cliente.nit || "-"}</td>
                     <td className="px-6 py-4 text-sm space-x-2">
                       <button
                         onClick={() => handleEdit(cliente)}

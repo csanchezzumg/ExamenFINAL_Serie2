@@ -173,7 +173,7 @@ function ProveedoresTab() {
   const handleEdit = (proveedor: Proveedor) => {
     setFormData({
       nombre: proveedor.nombre,
-      contacto: proveedor.contacto,
+      contacto: proveedor.contacto || "",
       telefono: proveedor.telefono || "",
       direccion: proveedor.direccion || "",
     });
@@ -294,7 +294,6 @@ function ProveedoresTab() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contacto</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teléfono</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
@@ -305,7 +304,6 @@ function ProveedoresTab() {
                     <td className="px-6 py-4 text-sm text-gray-900">{proveedor.id}</td>
                     <td className="px-6 py-4 text-sm text-gray-600 font-mono">{proveedor.codigo}</td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">{proveedor.nombre}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{proveedor.contacto}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{proveedor.telefono || "-"}</td>
                     <td className="px-6 py-4 text-sm space-x-2">
                       <button
