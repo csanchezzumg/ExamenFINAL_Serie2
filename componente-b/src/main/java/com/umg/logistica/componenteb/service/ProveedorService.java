@@ -28,6 +28,7 @@ public class ProveedorService {
 
     public ProveedorDTO crear(ProveedorDTO dto) {
         Proveedor proveedor = new Proveedor();
+        // Aquí se utiliza el método del componente C
         proveedor.setCodigo(LogisticaUtils.generarCodigoUnico("PROVEEDOR"));
         proveedor.setNombre(dto.getNombre());
         proveedor.setEmail(dto.getEmail());

@@ -19,6 +19,7 @@ servers:
   - url: http://localhost:8081/api
     description: API Base
 
+# Tags para organizar los endpoints
 tags:
   - name: Clientes
     description: Operaciones sobre clientes

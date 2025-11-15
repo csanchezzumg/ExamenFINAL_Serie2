@@ -3,7 +3,7 @@ package com.umg.logistica.componentea.service;
 import com.umg.logistica.componentea.dto.ClienteDTO;
 import com.umg.logistica.componentea.model.Cliente;
 import com.umg.logistica.componentea.repository.ClienteRepository;
-import com.umg.logistica.shared.util.LogisticaUtils;
+import com.umg.logistica.shared.util.LogisticaUtils; // Aquí se importa la utilidad compartida
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +47,7 @@ public class ClienteService {
         logger.info("Creando nuevo cliente: {}", dto.getNombre());
 
         Cliente cliente = new Cliente();
+        // Aquí se utiliza el método del componente C
         cliente.setCodigo(LogisticaUtils.generarCodigoUnico("CLIENTE"));
         cliente.setNombre(dto.getNombre());
         cliente.setEmail(dto.getEmail());

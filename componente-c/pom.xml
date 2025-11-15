@@ -8,7 +8,7 @@
     <groupId>com.umg.logistica</groupId>
     <artifactId>componente-c</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>jar</packaging> -- Aquí se empaqueta como JAR
 
     <name>Componente C - Biblioteca Compartida</name>
     <description>Dependencia Maven con lógica reutilizable para componentes A y B</description>
