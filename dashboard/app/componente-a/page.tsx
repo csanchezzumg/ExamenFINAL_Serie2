@@ -245,9 +245,13 @@ function ClientesTab() {
             <input
               type="tel"
               value={formData.telefono || ""}
-              onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 8);
+                setFormData({ ...formData, telefono: value });
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
-              placeholder="5551234567"
+              placeholder="12345678"
+              maxLength={8}
             />
           </div>
           <div>
